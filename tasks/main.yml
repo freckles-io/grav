@@ -82,6 +82,22 @@
     state: link
   become: true
 
+- name: change grav user
+  file:
+  args:
+    dest: "{{ grav_user_dir }}"
+    owner: "{{ grav_owner }}"
+  become: yes
+  when: "grav_owner is defined"
+
+- name: change grav group
+  file:
+  args:
+    dest: "{{ grav_user_dir }}"
+    owner: "{{ grav_group }}"
+  become: yes
+  when: "grav_group is defined"
+
 - name: restart nginx
   service:
   args:
