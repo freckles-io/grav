@@ -48,7 +48,7 @@
   args:
     path: /etc/nginx/sites-available/grav-site
     line: "    root {{ grav_dest }}/grav-admin;"
-    regexp: "'^\s*root.*;$"
+    regexp: '^\s*root.*;$'
   become: True
 
 - name: remove php-fpm socket config
