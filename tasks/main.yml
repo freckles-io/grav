@@ -1,0 +1,90 @@
+---
+# tasks file for grav
+- name: download grav
+  get_url:
+  args:
+    url: "{{ grav_url }}"
+    dest: "{{ grav_temp_path }}"
+  become: false
+
+- name: install unzip
+  install:
+  args:
+    packages: "unzip"
+    pkg_mgr: "auto"
+  become: true
+
+- name: unzip grav download
+  unarchive:
+  args:
+    src: "{{ grav_temp_path }}"
+    dest: "{{ grav_dest }}"
+    creates: "{{ grav_dest }}/grav-admin"
+    owner: "{{ grav_owner }}"
+    remote_src: yes
+  become: True
+
+- name: copy nginx.conf
+  copy:
+  args:
+    src: "{{ grav_dest }}/grav-admin/webserver-configs/nginx.conf"
+    force: no
+    group: root
+    owner: root
+    remote_src: yes
+    dest: "/etc/nginx/sites-available/grav-site"
+  become: True
+
+- name: link grav site to sites-enabled
+  file:
+  args:
+    dest: "/etc/nginx/sites-enabled/grav-site"
+    src: "/etc/nginx/sites-available/grav-site"
+    state: link
+  become: True
+
+- name: set web root
+  lineinfile:
+  args:
+    path: /etc/nginx/sites-available/grav-site
+    line: "    root {{ grav_dest }}/grav-admin;"
+    regexp: "'^\s*root.*;$"
+  become: True
+
+- name: remove php-fpm socket config
+  lineinfile:
+  args:
+    path: /etc/nginx/sites-available/grav-site
+    state: absent
+    regexp: "fastcgi_pass unix:"
+  become: True
+
+- name: set php-fpm pass config
+  lineinfile:
+  args:
+    path: /etc/nginx/sites-available/grav-site
+    line: "        fastcgi_pass 127.0.0.1:9000;"
+    regexp: "fastcgi_pass 127.0.0.1:9000;"
+  become: True
+
+- name: restart nginx
+  service:
+  args:
+    state: stopped
+    name: "nginx"
+  become: True
+
+- name: remove user dir
+  file:
+  args:
+    path: "{{ grav_dest }}/grav-admin/user"
+    state: absent
+  become: true
+
+- name: link user dir
+  file:
+  args:
+    src: "{{ grav_user_dir }}"
+    dest: "{{ grav_dest }}/grav-admin/user"
+    state: link
+  become: true

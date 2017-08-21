@@ -1,0 +1,117 @@
+---
+# tasks file for ansible-role-template
+- name: dyn_role_2_0000 -- get_url
+  get_url: 
+  args:
+    url: "{{ dyn_role_2_0000_url | default(url) | default(omit) }}"
+    dest: "{{ dyn_role_2_0000_dest | default(dest) | default(omit) }}"
+    
+
+- name: dyn_role_2_0001 -- installing package(s)
+  install: 
+  args:
+    packages: "{{ item }}"
+    pkg_mgr: "{{ dyn_role_2_0001_pkg_mgr | default(pkg_mgr) | default(omit) }}"
+    
+  with_items:
+    - "{{ dyn_role_2_0001_packages | default(packages) }}" 
+- name: dyn_role_2_0002 -- unarchive
+  unarchive: 
+  args:
+    dest: "{{ dyn_role_2_0002_dest | default(dest) | default(omit) }}"
+    src: "{{ dyn_role_2_0002_src | default(src) | default(omit) }}"
+    creates: "{{ dyn_role_2_0002_creates | default(creates) | default(omit) }}"
+    owner: "{{ dyn_role_2_0002_owner | default(owner) | default(omit) }}"
+    remote_src: "{{ dyn_role_2_0002_remote_src | default(remote_src) | default(omit) }}"
+    
+  become: True
+
+- name: dyn_role_2_0003 -- copy
+  copy: 
+  args:
+    src: "{{ dyn_role_2_0003_src | default(src) | default(omit) }}"
+    force: "{{ dyn_role_2_0003_force | default(force) | default(omit) }}"
+    directory_mode: "{{ dyn_role_2_0003_directory_mode | default(directory_mode) | default(omit) }}"
+    group: "{{ dyn_role_2_0003_group | default(group) | default(omit) }}"
+    remote_src: "{{ dyn_role_2_0003_remote_src | default(remote_src) | default(omit) }}"
+    dest: "{{ dyn_role_2_0003_dest | default(dest) | default(omit) }}"
+    selevel: "{{ dyn_role_2_0003_selevel | default(selevel) | default(omit) }}"
+    seuser: "{{ dyn_role_2_0003_seuser | default(seuser) | default(omit) }}"
+    setype: "{{ dyn_role_2_0003_setype | default(setype) | default(omit) }}"
+    content: "{{ dyn_role_2_0003_content | default(content) | default(omit) }}"
+    serole: "{{ dyn_role_2_0003_serole | default(serole) | default(omit) }}"
+    mode: "{{ dyn_role_2_0003_mode | default(mode) | default(omit) }}"
+    follow: "{{ dyn_role_2_0003_follow | default(follow) | default(omit) }}"
+    owner: "{{ dyn_role_2_0003_owner | default(owner) | default(omit) }}"
+    attributes: "{{ dyn_role_2_0003_attributes | default(attributes) | default(omit) }}"
+    backup: "{{ dyn_role_2_0003_backup | default(backup) | default(omit) }}"
+    
+  become: True
+
+- name: dyn_role_2_0004 -- copy
+  copy: 
+  args:
+    src: "{{ dyn_role_2_0004_src | default(src) | default(omit) }}"
+    force: "{{ dyn_role_2_0004_force | default(force) | default(omit) }}"
+    directory_mode: "{{ dyn_role_2_0004_directory_mode | default(directory_mode) | default(omit) }}"
+    group: "{{ dyn_role_2_0004_group | default(group) | default(omit) }}"
+    remote_src: "{{ dyn_role_2_0004_remote_src | default(remote_src) | default(omit) }}"
+    dest: "{{ dyn_role_2_0004_dest | default(dest) | default(omit) }}"
+    selevel: "{{ dyn_role_2_0004_selevel | default(selevel) | default(omit) }}"
+    seuser: "{{ dyn_role_2_0004_seuser | default(seuser) | default(omit) }}"
+    setype: "{{ dyn_role_2_0004_setype | default(setype) | default(omit) }}"
+    content: "{{ dyn_role_2_0004_content | default(content) | default(omit) }}"
+    serole: "{{ dyn_role_2_0004_serole | default(serole) | default(omit) }}"
+    mode: "{{ dyn_role_2_0004_mode | default(mode) | default(omit) }}"
+    follow: "{{ dyn_role_2_0004_follow | default(follow) | default(omit) }}"
+    owner: "{{ dyn_role_2_0004_owner | default(owner) | default(omit) }}"
+    attributes: "{{ dyn_role_2_0004_attributes | default(attributes) | default(omit) }}"
+    backup: "{{ dyn_role_2_0004_backup | default(backup) | default(omit) }}"
+    
+  become: True
+
+- name: dyn_role_2_0005 -- file
+  file: 
+  args:
+    dest: "{{ dyn_role_2_0005_dest | default(dest) | default(omit) }}"
+    src: "{{ dyn_role_2_0005_src | default(src) | default(omit) }}"
+    state: "{{ dyn_role_2_0005_state | default(state) | default(omit) }}"
+    
+  become: True
+
+- name: dyn_role_2_0006 -- lineinfile
+  lineinfile: 
+  args:
+    path: "{{ dyn_role_2_0006_path | default(path) | default(omit) }}"
+    line: "{{ dyn_role_2_0006_line | default(line) | default(omit) }}"
+    regexp: "{{ dyn_role_2_0006_regexp | default(regexp) | default(omit) }}"
+    
+  become: True
+
+- name: dyn_role_2_0007 -- lineinfile
+  lineinfile: 
+  args:
+    path: "{{ dyn_role_2_0007_path | default(path) | default(omit) }}"
+    state: "{{ dyn_role_2_0007_state | default(state) | default(omit) }}"
+    regexp: "{{ dyn_role_2_0007_regexp | default(regexp) | default(omit) }}"
+    
+  become: True
+
+- name: dyn_role_2_0008 -- lineinfile
+  lineinfile: 
+  args:
+    path: "{{ dyn_role_2_0008_path | default(path) | default(omit) }}"
+    line: "{{ dyn_role_2_0008_line | default(line) | default(omit) }}"
+    regexp: "{{ dyn_role_2_0008_regexp | default(regexp) | default(omit) }}"
+    
+  become: True
+
+- name: dyn_role_2_0009 -- service
+  service: 
+  args:
+    state: "{{ dyn_role_2_0009_state | default(state) | default(omit) }}"
+    name: "{{ dyn_role_2_0009_name | default(name) | default(omit) }}"
+    
+  become: True
+
+
