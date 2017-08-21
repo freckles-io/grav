@@ -80,7 +80,7 @@
     src: "{{ grav_user_dir }}"
     dest: "{{ grav_dest }}/grav-admin/user"
     state: link
-  become: false
+  become: true
 
 - name: restart nginx
   service:
