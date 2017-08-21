@@ -67,13 +67,6 @@
     regexp: "fastcgi_pass 127.0.0.1:9000;"
   become: True
 
-- name: restart nginx
-  service:
-  args:
-    state: stopped
-    name: "nginx"
-  become: True
-
 - name: remove user dir
   file:
   args:
@@ -88,3 +81,10 @@
     dest: "{{ grav_dest }}/grav-admin/user"
     state: link
   become: false
+
+- name: restart nginx
+  service:
+  args:
+    state: stopped
+    name: "nginx"
+  become: True
