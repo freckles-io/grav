@@ -1,5 +1,9 @@
 ---
 # tasks file for grav
+- name: setting variable grav_user_dir
+  set_fact:
+    grav_user_dir_expanded: "{{ grav_user_dir | expanduser }}"
+
 - name: download grav
   get_url:
   args:
@@ -78,7 +82,7 @@
 - name: link user dir
   file:
   args:
-    src: "{{ grav_user_dir }}"
+    src: "{{ grav_user_dir_expanded }}"
     dest: "{{ grav_dest }}/grav-admin/user"
     state: link
   become: true
@@ -88,23 +92,23 @@
 
 # takes too long to do it one by one
 - name: change file permissions
-  shell: "find {{ grav_user_dir }} -type f | xargs chmod 664"
+  shell: "find {{ grav_user_dir_expanded }} -type f | xargs chmod 664"
   when: "change_grav_user_dir_group_permissions"
 
 - name: change grav group
   file:
   args:
-    dest: "{{ grav_user_dir }}"
+    dest: "{{ grav_user_dir_expanded }}"
     group: "{{ grav_group }}"
     recurse: yes
   become: yes
   when: "change_grav_user_dir_group_permissions and grav_group is defined"
 
 - name: change directory permissions
-  shell: "find {{ grav_user_dir }} -type d | xargs chmod 0775"
+  shell: "find {{ grav_user_dir_expanded }} -type d | xargs chmod 0775"
 
 - name: change directory setguid
-  shell: "find {{ grav_user_dir }} -type d | xargs chmod +s"
+  shell: "find {{ grav_user_dir_expanded }} -type d | xargs chmod +s"
 
 - name: restart nginx
   service:
