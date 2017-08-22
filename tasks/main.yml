@@ -81,6 +81,7 @@
     dest: "{{ grav_dest }}/grav-admin/user"
     state: link
   become: true
+  when: 'grav_user_dir is defined'
 
 - name: change grav user
   file:

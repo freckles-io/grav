@@ -1,7 +1,5 @@
 ---
 # defaults file for grav
 grav_url: http://getgrav.org/download/core/grav-admin/latest
-grav_dest: /var/www
-#grav_owner: www-data
-#grav_group: www-data
-grav_user_dir: "~/freckles/grav_user"
+grav_dest: /var/www/
+#grav_user_dir: "{{ grav_dest }}/grav-admin/user"
