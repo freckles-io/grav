@@ -94,14 +94,14 @@
   become: yes
   when: "change_grav_user_dir_group_permissions and grav_group is defined"
 
-- name: find all files in user dir
-  find:
-    paths:
-      - "{{ grav_user_dir }}"
-    file_type: file
-    recurse: yes
-  register: all_grav_user_files
-  when: "change_grav_user_dir_group_permissions"
+# - name: find all files in user dir
+  # find:
+    # paths:
+      # - "{{ grav_user_dir }}"
+    # file_type: file
+    # recurse: yes
+  # register: all_grav_user_files
+  # when: "change_grav_user_dir_group_permissions"
 
 - name: find all dirs in user dir
   find:
@@ -112,11 +112,12 @@
   register: all_grav_user_directories
   when: "change_grav_user_dir_group_permissions"
 
+# takes too long to do it one by one
 - name: change file permissions
   file:
-    path: "{{ item.path }}"
+    path: "{{ grav_user_dir }}"
     mode: 0664
-  with_items: "{{ all_grav_user_files.files }}"
+    recurse: yes
   when: "change_grav_user_dir_group_permissions"
 
 - name: change directory permissions
