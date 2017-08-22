@@ -85,14 +85,6 @@
   when: 'grav_user_dir is defined'
 
 # changing permissions according to: https://learn.getgrav.org/troubleshooting/permissions
-- name: change grav group
-  file:
-  args:
-    dest: "{{ grav_user_dir }}"
-    group: "{{ grav_group }}"
-    recurse: yes
-  become: yes
-  when: "change_grav_user_dir_group_permissions and grav_group is defined"
 
 # - name: find all files in user dir
   # find:
@@ -119,6 +111,15 @@
     mode: 0664
     recurse: yes
   when: "change_grav_user_dir_group_permissions"
+
+- name: change grav group
+  file:
+  args:
+    dest: "{{ grav_user_dir }}"
+    group: "{{ grav_group }}"
+    recurse: yes
+  become: yes
+  when: "change_grav_user_dir_group_permissions and grav_group is defined"
 
 - name: change directory permissions
   file:
