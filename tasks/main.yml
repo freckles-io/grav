@@ -20,7 +20,8 @@
     src: "{{ grav_temp_path }}"
     dest: "{{ grav_dest }}"
     creates: "{{ grav_dest }}/grav-admin"
-    owner: "{{ grav_owner }}"
+    owner: "{{ grav_owner | default(omit) }}"
+    group: "{{ grav_group | default(omit) }}"
     remote_src: yes
   become: True
 
@@ -83,27 +84,52 @@
   become: true
   when: 'grav_user_dir is defined'
 
-- name: change grav user
-  file:
-  args:
-    dest: "{{ grav_user_dir }}"
-    owner: "{{ grav_owner }}"
-    recurse: yes
-  become: yes
-  when: "grav_owner is defined"
+# - name: change grav group
+#   file:
+#   args:
+#     dest: "{{ grav_user_dir }}"
+#     group: "{{ grav_group }}"
+#     recurse: yes
+#   become: yes
+#   when: "change_grav_user_dir_group_permissions and grav_group is defined"
 
-- name: change grav group
+# changing permissions according to: https://learn.getgrav.org/troubleshooting/permissions
+- name: find all files in user dir
+  find:
+    paths:
+      - "{{ grav_user_dir }}"
+    file_type: file
+  register: all_grav_user_files
+  when: "change_grav_user_dir_group_permissions"
+
+- name: find all dirs in user dir
+  find:
+    paths:
+      - "{{ grav_user_dir }}"
+    file_type: directory
+  register: all_grav_user_directories
+  when: "change_grav_user_dir_group_permissions"
+
+- name: change file permissions
   file:
   args:
-    dest: "{{ grav_user_dir }}"
-    group: "{{ grav_group }}"
-    recurse: yes
-  become: yes
-  when: "grav_group is defined"
+    dest: "{{ item }}"
+    mode: 0664
+  with_items:
+    - "{{ all_grav_user_files.files }}"
+
+- name: change directory permissions
+  file:
+  args:
+    dest: "{{ item }}"
+    mode: 2775
+  with_items:
+    - "{{ all_grav_user_directories.files }}"
+
 
 - name: restart nginx
   service:
   args:
-    state: stopped
+    state: restarted
     name: "nginx"
   become: True
