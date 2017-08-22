@@ -101,7 +101,10 @@
   when: "change_grav_user_dir_group_permissions and grav_group is defined"
 
 - name: change directory permissions
-  shell: "find {{ grav_user_dir }} -type d | xargs chmod 2775"
+  shell: "find {{ grav_user_dir }} -type d | xargs chmod 0775"
+
+- name: change directory setguid
+  shell: "find {{ grav_user_dir }} -type d | xargs chmod +s"
 
 - name: restart nginx
   service:
