@@ -120,7 +120,7 @@
 - name: change directory permissions
   file:
     path: "{{ item.path }}"
-    mode: u+rwx,g+rwxs,o=r
+    mode: g+rwxs
   with_items: "{{ all_grav_user_directories.files }}"
   when: "change_grav_user_dir_group_permissions"
 
