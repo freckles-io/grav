@@ -88,7 +88,7 @@
   args:
     dest: "{{ grav_user_dir }}"
     owner: "{{ grav_owner }}"
-    recursive: yes
+    recurse: yes
   become: yes
   when: "grav_owner is defined"
 
@@ -97,7 +97,7 @@
   args:
     dest: "{{ grav_user_dir }}"
     group: "{{ grav_group }}"
-    recursive: yes
+    recurse: yes
   become: yes
   when: "grav_group is defined"
 
