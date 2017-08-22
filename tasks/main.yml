@@ -112,19 +112,15 @@
 
 - name: change file permissions
   file:
-  args:
-    dest: "{{ item }}"
+    path: "{{ item.path }}"
     mode: 0664
-  with_items:
-    - "{{ all_grav_user_files.files }}"
+  with_items: "{{ all_grav_user_files.files }}"
 
 - name: change directory permissions
   file:
-  args:
-    dest: "{{ item }}"
+    path: "{{ item.path }}"
     mode: 2775
-  with_items:
-    - "{{ all_grav_user_directories.files }}"
+  with_items: "{{ all_grav_user_directories.files }}"
 
 
 - name: restart nginx
