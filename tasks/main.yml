@@ -99,6 +99,7 @@
     paths:
       - "{{ grav_user_dir }}"
     file_type: file
+    recurse: yes
   register: all_grav_user_files
   when: "change_grav_user_dir_group_permissions"
 
@@ -107,6 +108,7 @@
     paths:
       - "{{ grav_user_dir }}"
     file_type: directory
+    recurse: yes
   register: all_grav_user_directories
   when: "change_grav_user_dir_group_permissions"
 
@@ -120,7 +122,14 @@
 - name: change directory permissions
   file:
     path: "{{ item.path }}"
-    mode: g+rwxs
+    mode: g+s
+  with_items: "{{ all_grav_user_directories.files }}"
+  when: "change_grav_user_dir_group_permissions"
+
+- name: change directory setgid
+  file:
+    path: "{{ item.path }}"
+    mode: g+s
   with_items: "{{ all_grav_user_directories.files }}"
   when: "change_grav_user_dir_group_permissions"
 
