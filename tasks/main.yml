@@ -106,10 +106,7 @@
 
 # takes too long to do it one by one
 - name: change file permissions
-  file:
-    path: "{{ grav_user_dir }}"
-    mode: 0664
-    recurse: yes
+  shell: "find {{ grav_user_dir }} -type f | xargs chmod 664"
   when: "change_grav_user_dir_group_permissions"
 
 - name: change grav group
