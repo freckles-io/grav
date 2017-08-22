@@ -115,13 +115,14 @@
     path: "{{ item.path }}"
     mode: 0664
   with_items: "{{ all_grav_user_files.files }}"
+  when: "change_grav_user_dir_group_permissions"
 
 - name: change directory permissions
   file:
     path: "{{ item.path }}"
     mode: 2775
   with_items: "{{ all_grav_user_directories.files }}"
-
+  when: "change_grav_user_dir_group_permissions"
 
 - name: restart nginx
   service:
