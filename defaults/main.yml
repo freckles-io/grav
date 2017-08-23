@@ -1,5 +1,5 @@
 ---
 # defaults file for grav
-grav_url: http://getgrav.org/download/core/grav-admin/latest
+grav_url: http://getgrav.org/download/core/grav/latest
 grav_dest: /var/www/
 change_grav_user_dir_group_permissions: no
