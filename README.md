@@ -1,38 +1,43 @@
-Role Name
-=========
+grav
+=====
 
-A brief description of the role goes here.
+A role to setup a grav development environment by sym-linking a local folder into the _grav/user_ location. 
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+At the moment, it is mainly used as an example on how to create _freckles profiles_, but with a few slight modifications it could probably be used independent of freckles.
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+   grav_url: http://getgrav.org/download/core/grav/latest
+   grav_dest: /var/www
+   grav_change_user_dir_group_permissions: no
+   grav_webserver_user: www-data
+   grav_webserver_group: www-data
+   grav_webserver_port: 80
+   
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+- geerlingguy.php
+- geerlingguy.nginx
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
     - hosts: servers
       roles:
-         - { role: username.rolename, x: 42 }
+         - makkus.grav
 
 License
 -------
 
-BSD
+GPLv3
 
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Markus Binsteiner
