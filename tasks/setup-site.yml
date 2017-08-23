@@ -1,76 +1,101 @@
 # tasks to install a grav site
+- name: create temp folder
+  file:
+    path="{{ grav_temp_path }}/unpacked"
+    state=directory
+  become: yes
+
 - name: download grav
   get_url:
   args:
     url: "{{ grav_url }}"
-    dest: "{{ grav_temp_path }}"
-  become: false
+    dest: "{{ grav_temp_path }}/grav.zip"
+  become: yes
 
 - name: install unzip
   install:
   args:
     packages: "unzip"
-    pkg_mgr: "auto"
   become: true
 
 - name: unzip grav download
   unarchive:
   args:
-    src: "{{ grav_temp_path }}"
-    dest: "{{ grav_dest }}"
-    creates: "{{ grav_dest }}/grav-admin"
+    src: "{{ grav_temp_path }}/grav.zip"
+    dest: "{{ grav_temp_path }}/unpacked"
     owner: "{{ grav_owner | default(omit) }}"
     group: "{{ grav_group | default(omit) }}"
     remote_src: yes
-  become: True
+  become: true
+
+- name: move site dir in place
+  command: "mv {{ grav_temp_path }}/unpacked/grav {{ grav_site_dir }}"
+  become: true
+
+#TODO: group name for other distributions?
+- name: chgroup for site dir
+  file:
+    path: "{{ grav_site_dir }}"
+    owner: "{{ grav_webserver_user }}"
+    group: "{{ grav_webserver_group }}"
+    recurse: yes
+  become: yes
 
 - name: copy nginx.conf
   copy:
   args:
-    src: "{{ grav_dest }}/grav-admin/webserver-configs/nginx.conf"
+    src: "{{ grav_site_dir }}/webserver-configs/nginx.conf"
     force: no
     group: root
     owner: root
     remote_src: yes
-    dest: "/etc/nginx/sites-available/grav-site"
-  become: True
+    dest: "/etc/nginx/sites-available/{{ grav_site_name }}"
+  become: true
 
 - name: link grav site to sites-enabled
   file:
   args:
-    dest: "/etc/nginx/sites-enabled/grav-site"
-    src: "/etc/nginx/sites-available/grav-site"
+    dest: "/etc/nginx/sites-enabled/{{ grav_site_name }}"
+    src: "/etc/nginx/sites-available/{{ grav_site_name }}"
     state: link
-  become: True
+  become: true
 
 - name: set web root
   lineinfile:
   args:
-    path: /etc/nginx/sites-available/grav-site
-    line: "    root {{ grav_dest }}/grav-admin;"
+    path: "/etc/nginx/sites-available/{{ grav_site_name }}"
+    line: "    root {{ grav_site_dir }};"
     regexp: '^\s*root.*;$'
-  become: True
+  become: true
 
 - name: remove php-fpm socket config
   lineinfile:
   args:
-    path: /etc/nginx/sites-available/grav-site
+    path: "/etc/nginx/sites-available/{{ grav_site_name }}"
     state: absent
     regexp: "fastcgi_pass unix:"
-  become: True
+  become: true
 
 - name: set php-fpm pass config
   lineinfile:
   args:
-    path: /etc/nginx/sites-available/grav-site
+    path: "/etc/nginx/sites-available/{{ grav_site_name }}"
     line: "        fastcgi_pass 127.0.0.1:9000;"
     regexp: "fastcgi_pass 127.0.0.1:9000;"
-  become: True
+  become: true
+
+- name: set listen port
+  lineinfile:
+  args:
+    path: "/etc/nginx/sites-available/{{ grav_site_name }}"
+    line: "    listen {{ grav_webserver_port }};"
+    regexp: "listen.*;$"
+  become: true
 
 - name: remove user dir
   file:
   args:
-    path: "{{ grav_dest }}/grav-admin/user"
+    path: "{{ grav_site_dir }}/user"
     state: absent
   become: true
 
@@ -78,36 +103,7 @@
   file:
   args:
     src: "{{ grav_user_dir_expanded }}"
-    dest: "{{ grav_dest }}/grav-admin/user"
+    dest: "{{ grav_site_dir }}/user"
     state: link
   become: true
-  when: 'grav_user_dir is defined'
 
-# changing permissions according to: https://learn.getgrav.org/troubleshooting/permissions
-
-# takes too long to do it one by one
-- name: change file permissions
-  shell: "find {{ grav_user_dir_expanded }} -type f | xargs chmod 664"
-  when: "change_grav_user_dir_group_permissions"
-
-- name: change grav group
-  file:
-  args:
-    dest: "{{ grav_user_dir_expanded }}"
-    group: "{{ grav_group }}"
-    recurse: yes
-  become: yes
-  when: "change_grav_user_dir_group_permissions and grav_group is defined"
-
-- name: change directory permissions
-  shell: "find {{ grav_user_dir_expanded }} -type d | xargs chmod 0775"
-
-- name: change directory setguid
-  shell: "find {{ grav_user_dir_expanded }} -type d | xargs chmod +s"
-
-- name: restart nginx
-  service:
-  args:
-    state: restarted
-    name: "nginx"
-  become: True
