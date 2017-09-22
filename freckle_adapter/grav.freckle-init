@@ -13,5 +13,5 @@
     php_packages_extra:
       - php-zip
     php_webserver_daemon: "nginx"
-    __php_fpm_pool_user: "{{ freckles_user_vars.freckles_grav_nginx_user | default(omit) }}"
+    php_fpm_pool_user: "{{ freckles_user_vars.freckles_grav_nginx_user | default(omit) }}"
   become: true
