@@ -1,0 +1,18 @@
+doc:
+  help: "installs nginx, php, then downloads grav and creates a site with the provided freckle"
+args:
+  freckles_grav_nginx_user:
+    help: "the user nginx should be run as"
+    arg_name: nginx-user
+    required: false
+    is_var: true
+  freckles_grav_site_base_port:
+    arg_name: port
+    help: "the port to use for the (first) site, subsequent sites will increment the port by 1"
+    required: false
+    type: int
+    default: 8080
+role-dependencies:
+  - makkus.grav
+  - geerlingguy.php
+  - geerlingguy.nginx

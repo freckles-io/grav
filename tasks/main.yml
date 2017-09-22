@@ -34,10 +34,12 @@
 - name: change directory permissions
   shell: "find {{ grav_user_dir_expanded }} -type d | xargs chmod 0775"
   when: "grav_change_user_dir_group_permissions"
+  become: true
 
 - name: change directory setguid
   shell: "find {{ grav_user_dir_expanded }} -type d | xargs chmod +s"
   when: "grav_change_user_dir_group_permissions"
+  become: true
 
 - name: restart nginx
   service:
