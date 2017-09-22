@@ -1,9 +1,17 @@
 ---
 # tasks file for grav
+- name: getting folder stats for /var/www
+  stat:
+    path: "{{ grav_dest }}"
+  register: web_root_folder
+
+
 - name: setting variable grav_user_dir
   set_fact:
     grav_user_dir_expanded: "{{ grav_user_dir | expanduser }}"
     grav_site_dir: "{{ grav_dest }}/{{ grav_site_name }}"
+    webserver_user: "{{ web_root_folder.stat.pw_name }}"
+    webserver_group: "{{ web_root_folder.stat.gr_name }}"
 
 - name: check whether site already exists
   stat:

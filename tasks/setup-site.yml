@@ -32,12 +32,11 @@
   command: "mv {{ grav_temp_path }}/unpacked/grav {{ grav_site_dir }}"
   become: true
 
-#TODO: group name for other distributions?
 - name: chgroup for site dir
   file:
     path: "{{ grav_site_dir }}"
-    owner: "{{ grav_webserver_user }}"
-    group: "{{ grav_webserver_group }}"
+    owner: "{{ webserver_user }}"
+    group: "{{ webserver_group }}"
     recurse: yes
   become: yes
 
@@ -111,5 +110,5 @@
   command: bin/gpm  selfupgrade -f
   args:
     chdir: "{{ grav_site_dir }}"
-  become_user: "{{ grav_webserver_user }}"
+  become_user: "{{ webserver_user }}"
   become: yes
