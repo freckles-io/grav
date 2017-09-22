@@ -1,9 +1,13 @@
+- set_fact:
+    nginx_user: "{{ freckles_user_vars.freckles_grav_nginx_user }}"
+    php_fpm_pool_user: "{{ freckles_user_vars.freckles_grav_nginx_user }}"
+  when: "freckles_user_vars.freckles_grav_nginx_user"
+
 - include_role:
     name: geerlingguy.nginx
   vars:
     nginx_remove_default_vhost: true
     nginx_vhosts: []
-    nginx_user: "{{ freckles_user_vars.freckles_grav_nginx_user | default(omit) }}"
   become: true
 
 - include_role:
@@ -13,5 +17,4 @@
     php_packages_extra:
       - php-zip
     php_webserver_daemon: "nginx"
-    php_fpm_pool_user: "{{ freckles_user_vars.freckles_grav_nginx_user | default(omit) }}"
   become: true
