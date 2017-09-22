@@ -1,7 +1,7 @@
 - set_fact:
     nginx_user: "{{ freckles_user_vars.freckles_grav_nginx_user }}"
     php_fpm_pool_user: "{{ freckles_user_vars.freckles_grav_nginx_user }}"
-  when: "freckles_user_vars.freckles_grav_nginx_user"
+  when: "freckles_user_vars.get('freckles_grav_nginx_user', False)"
 
 - include_role:
     name: geerlingguy.nginx
