@@ -55,3 +55,18 @@
     state: restarted
     name: "nginx"
   become: true
+
+- copy:
+    src: "{{ role_path }}/files/docker_run.sh"
+    dest: /opt/docker_run.sh
+    mode: 0775
+  become: true
+
+# - name: install supervisord
+#   install:
+#     packages;
+#       - supervisor
+#   when: use_supervisord
+
+# # - name: start php service with supervisord
+#   # supervisorctl:

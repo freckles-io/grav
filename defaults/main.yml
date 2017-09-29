@@ -4,4 +4,4 @@ grav_url: http://getgrav.org/download/core/grav/latest
 grav_dest: /var/www
 grav_change_user_dir_group_permissions: no
 grav_webserver_port: 80
-
+#use_supervisord: yes
