@@ -108,9 +108,9 @@
     state: link
   become: true
 
-- name: refresh gpm index for site
-  command: bin/gpm  selfupgrade -f
-  args:
-    chdir: "{{ grav_site_dir }}"
-  become_user: "{{ nginx_user }}"
-  become: yes
+# - name: refresh gpm index for site
+#   command: bin/gpm  selfupgrade -f
+#   args:
+#     chdir: "{{ grav_site_dir }}"
+#   become_user: "{{ nginx_user }}"
+#   become: yes
