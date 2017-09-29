@@ -112,5 +112,5 @@
   command: bin/gpm  selfupgrade -f
   args:
     chdir: "{{ grav_site_dir }}"
-  become_user: "{{ webserver_user }}"
+  become_user: "{{ nginx_user }}"
   become: yes
