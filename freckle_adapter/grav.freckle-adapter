@@ -11,7 +11,7 @@ args:
     help: "the port to use for the (first) site, subsequent sites will increment the port by 1"
     required: false
     type: int
-    default: 8080
+    default: 80
 role-dependencies:
   - makkus.grav
   - geerlingguy.php

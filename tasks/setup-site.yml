@@ -23,8 +23,6 @@
   args:
     src: "{{ grav_temp_path }}/grav.zip"
     dest: "{{ grav_temp_path }}/unpacked"
-    owner: "{{ grav_owner | default(omit) }}"
-    group: "{{ grav_group | default(omit) }}"
     remote_src: yes
   become: true
 

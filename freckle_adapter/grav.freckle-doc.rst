@@ -14,6 +14,10 @@ Usage
 
 At least one path or url to a freckle needs to be provided (multiple paths can be supplied by simply providing multiple ``--freckle`` options). In this case, *freckles* creates one Ngnix site configuration per *freckle*, counting up the port from the default port (80).
 
+.. note::
+
+    You might need to take manual action and change file or folder permissions in case the permissions of the *freckle* don't match what can be read or written by the user who runs *nginx* or it is located within a folder that user can't access (e.g. /root/freckles/<site>). The *grav* webpage also has a page on permission issues that might be worth checking out: https://learn.getgrav.org/troubleshooting/permissions
+
 Options
 =======
 

@@ -4,6 +4,5 @@
   vars:
     grav_user_dir: "{{ freckle_path }}"
     grav_change_user_dir_group_permissions: no
-    grav_group: www-data
     grav_site_name: "{{ freckle_path | basename }}"
     grav_webserver_port: "{{ freckle_vars_raw['stats']['folders']['current'] + freckles_user_vars.get('freckles_grav_site_base_port', 8080) }}"

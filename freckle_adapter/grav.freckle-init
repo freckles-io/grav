@@ -1,3 +1,4 @@
+# we need to set this as fact, because we can't use the 'default(omit)' directive in the include role vars.
 - set_fact:
     nginx_user: "{{ freckles_user_vars.freckles_grav_nginx_user }}"
     php_fpm_pool_user: "{{ freckles_user_vars.freckles_grav_nginx_user }}"
