@@ -13,6 +13,8 @@
     webserver_user: "{{ web_root_folder.stat.pw_name }}"
     webserver_group: "{{ web_root_folder.stat.gr_name }}"
 
+- debug: var=nginx_user
+
 - fail: msg="ss"
 
 - name: check whether site already exists
