@@ -37,8 +37,8 @@
 - name: chgroup for site dir
   file:
     path: "{{ grav_site_dir }}"
-    owner: "{{ webserver_user }}"
-    group: "{{ webserver_group }}"
+    owner: "{{ nginx_user }}"
+    # group: "{{ webserver_group }}"
     recurse: yes
   become: yes
 
