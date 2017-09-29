@@ -13,6 +13,8 @@
     webserver_user: "{{ web_root_folder.stat.pw_name }}"
     webserver_group: "{{ web_root_folder.stat.gr_name }}"
 
+- fail: msg="ss"
+
 - name: check whether site already exists
   stat:
     path: "{{ grav_site_dir }}"
@@ -20,7 +22,7 @@
 
 - name: including site-install (if necessary)
   include: setup-site.yml
-  when: "not site_folder.stat.exists"
+  # when: "not site_folder.stat.exists"
 
 # changing permissions according to: https://learn.getgrav.org/troubleshooting/permissions
 

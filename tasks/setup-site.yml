@@ -11,12 +11,14 @@
     url: "{{ grav_url }}"
     dest: "{{ grav_temp_path }}/grav.zip"
   become: yes
+  when: "not site_folder.stat.exists"
 
 - name: install unzip
   install:
   args:
     packages: "unzip"
   become: true
+  when: "not site_folder.stat.exists"
 
 - name: unzip grav download
   unarchive:
@@ -25,10 +27,12 @@
     dest: "{{ grav_temp_path }}/unpacked"
     remote_src: yes
   become: true
+  when: "not site_folder.stat.exists"
 
 - name: move site dir in place
   command: "mv {{ grav_temp_path }}/unpacked/grav {{ grav_site_dir }}"
   become: true
+  when: "not site_folder.stat.exists"
 
 - name: chgroup for site dir
   file:
