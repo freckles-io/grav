@@ -49,7 +49,7 @@
   when: "grav_change_user_dir_group_permissions"
   become: true
 
-- name: restart nginx
+- name: restart nginx webserver
   service:
   args:
     state: restarted
