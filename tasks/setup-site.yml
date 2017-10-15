@@ -42,6 +42,21 @@
     recurse: yes
   become: yes
 
+- name: ensure sites-available folder exists
+  file:
+    path: "/etc/nginx/sites-available"
+    owner: "{{ nginx_user }}"
+    recurse: yes
+  become: yes
+
+- name: ensure sites-enabled folder exists
+  file:
+    path: "/etc/nginx/sites-enabled"
+    owner: "{{ nginx_user }}"
+    recurse: yes
+  become: yes
+
+
 - name: copy nginx.conf
   copy:
   args:
