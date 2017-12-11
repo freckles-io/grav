@@ -1,20 +1,21 @@
 # we need to set this as fact, because we can't use the 'default(omit)' directive in the include role vars.
-- set_fact:
-    nginx_user: "{{ freckles_user_vars.freckles_grav_nginx_user }}"
-    php_fpm_pool_user: "{{ freckles_user_vars.freckles_grav_nginx_user }}"
-  when: "freckles_user_vars.get('freckles_grav_nginx_user', False)"
 
-- include_role:
+- name: "[starting nginx role]"
+  include_role:
     name: geerlingguy.nginx
   vars:
     nginx_remove_default_vhost: true
     nginx_vhosts: []
+    php_fpm_pool_user: "{{ freckles_global_vars.owner }}"
+    nginx_user: "{{ freckles_global_vars.owner }}"
   become: true
 
-- include_role:
+- name: "[starting php role]"
+  include_role:
     name: geerlingguy.php
   vars:
     php_enable_php_fpm: true
+    php_fpm_pool_user: "{{ freckles_global_vars.owner }}"
     php_packages_extra:
       - php-zip
     php_webserver_daemon: "nginx"

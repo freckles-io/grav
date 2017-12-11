@@ -6,11 +6,17 @@ A role to setup a grav development environment by sym-linking a local folder int
 Requirements
 ------------
 
-At the moment, it is mainly used as an example on how to create _freckles profiles_, but with a few slight modifications it could probably be used independent of freckles.
+Existing webserver & php. For example:
+
+- geerlingguy.php
+- geerlingguy.nginx
+
 
 Role Variables
 --------------
 
+   grav_user_dir: --no default--
+   grav_site_name: default_site
    grav_url: http://getgrav.org/download/core/grav/latest
    grav_dest: /var/www
    grav_change_user_dir_group_permissions: no
@@ -18,12 +24,10 @@ Role Variables
    grav_webserver_group: www-data
    grav_webserver_port: 80
    
-
 Dependencies
 ------------
 
-- geerlingguy.php
-- geerlingguy.nginx
+n/a
 
 Example Playbook
 ----------------

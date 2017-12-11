@@ -37,22 +37,22 @@
 - name: chgroup for site dir
   file:
     path: "{{ grav_site_dir }}"
-    owner: "{{ nginx_user }}"
-    # group: "{{ webserver_group }}"
+    owner: "{{ grav_webserver_user }}"
+    # group: "{{ grav_webserver_group }}"
     recurse: yes
   become: yes
 
 - name: ensure sites-available folder exists
   file:
     path: "/etc/nginx/sites-available"
-    owner: "{{ nginx_user }}"
+    owner: "{{ grav_webserver_user }}"
     recurse: yes
   become: yes
 
 - name: ensure sites-enabled folder exists
   file:
     path: "/etc/nginx/sites-enabled"
-    owner: "{{ nginx_user }}"
+    owner: "{{ grav_webserver_user }}"
     recurse: yes
   become: yes
 

@@ -1,8 +1,13 @@
+- name: "[setting adapter variables from .freckle file]"
+  set_fact:
+    grav_webserver_port: "{{ freckle_vars['port'] | default(omit) }}"
+  when: "grav_webserver_port is not defined"
+
 - include_role:
     name: makkus.grav
   static: yes
   vars:
+    webserver_user: "{{ freckle_folder_vars['owner'] }}"
     grav_user_dir: "{{ freckle_path }}"
     grav_change_user_dir_group_permissions: no
     grav_site_name: "{{ freckle_path | basename }}"
-    grav_webserver_port: "{{ freckle_vars_raw['stats']['folders']['current'] + freckles_user_vars.get('freckles_grav_site_base_port', 8080) }}"
