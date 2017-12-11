@@ -14,9 +14,9 @@
   when: "not site_folder.stat.exists"
 
 - name: install unzip
-  install:
+  package:
   args:
-    packages: "unzip"
+    name: "unzip"
   become: true
   when: "not site_folder.stat.exists"
 
@@ -28,6 +28,11 @@
     remote_src: yes
   become: true
   when: "not site_folder.stat.exists"
+
+- name: create web root
+  file:
+    path: "{{ grav_dest }}"
+    state: directory
 
 - name: move site dir in place
   command: "mv {{ grav_temp_path }}/unpacked/grav {{ grav_site_dir }}"

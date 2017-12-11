@@ -19,7 +19,7 @@
   register: site_folder
 
 - name: including site-install (if necessary)
-  include: setup-site.yml
+  include_tasks: setup-site.yml
   # when: "not site_folder.stat.exists"
 
 # changing permissions according to: https://learn.getgrav.org/troubleshooting/permissions
@@ -56,7 +56,8 @@
     name: "nginx"
   become: true
 
-- copy:
+- name: copy docker run file
+  copy:
     src: "{{ role_path }}/files/docker_run.sh"
     dest: /opt/docker_run.sh
     mode: 0775
