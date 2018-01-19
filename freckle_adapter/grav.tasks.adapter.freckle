@@ -1,7 +1,6 @@
 - name: "[setting adapter variables from .freckle file]"
   set_fact:
-    grav_webserver_port: "{{ freckle_vars['port'] | default(omit) }}"
-  when: "grav_webserver_port is not defined"
+    grav_webserver_port: "{{ freckle_vars.grav_webserver_port | default(80) }}"
 
 - include_role:
     name: makkus.grav

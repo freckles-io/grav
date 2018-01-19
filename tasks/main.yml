@@ -5,7 +5,6 @@
     path: "{{ grav_dest }}"
   register: web_root_folder
 
-
 - name: setting variable grav_user_dir
   set_fact:
     grav_user_dir_expanded: "{{ grav_user_dir | expanduser }}"
