@@ -12,7 +12,7 @@
     # webserver_user: "{{ web_root_folder.stat.pw_name }}"
     # webserver_group: "{{ web_root_folder.stat.gr_name }}"
 
-- name: check whether site already exists
+- name: checking whether site already exists
   stat:
     path: "{{ grav_site_dir }}"
   register: site_folder
@@ -24,12 +24,12 @@
 # changing permissions according to: https://learn.getgrav.org/troubleshooting/permissions
 
 # takes too long to do it one by one
-- name: change file permissions
+- name: changing file permissions
   shell: "find {{ grav_user_dir_expanded }} -type f | xargs chmod 664"
   when: "grav_change_user_dir_group_permissions"
   become: true
 
-- name: change grav group
+- name: changing grav group ownership
   file:
   args:
     dest: "{{ grav_user_dir_expanded }}"
@@ -38,24 +38,24 @@
   become: true
   when: "grav_change_user_dir_group_permissions and grav_group is defined"
 
-- name: change directory permissions
+- name: changing directory permissions
   shell: "find {{ grav_user_dir_expanded }} -type d | xargs chmod 0775"
   when: "grav_change_user_dir_group_permissions"
   become: true
 
-- name: change directory setguid
+- name: changing directory setguid
   shell: "find {{ grav_user_dir_expanded }} -type d | xargs chmod +s"
   when: "grav_change_user_dir_group_permissions"
   become: true
 
-- name: restart nginx webserver
+- name: restarting nginx webserver
   service:
   args:
     state: restarted
     name: "nginx"
   become: true
 
-- name: copy docker run file
+- name: copying docker run file
   copy:
     src: "{{ role_path }}/files/docker_run.sh"
     dest: /opt/docker_run.sh
