@@ -1,0 +1,17 @@
+doc:
+  help: "installs nginx, php, then downloads grav and creates a site with the provided freckle"
+args:
+  owner:
+    help: "the user nginx should be run as"
+    arg_name: owner
+    required: false
+    is_var: true
+  port:
+    help: "the port to use for the (first) site, subsequent sites will increment the port by 1"
+    required: false
+    type: int
+
+role-dependencies:
+  - makkus.grav
+  - geerlingguy.php
+  - geerlingguy.nginx

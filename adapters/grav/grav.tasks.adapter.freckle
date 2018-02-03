@@ -1,0 +1,9 @@
+- include_role:
+    name: makkus.grav
+  static: yes
+  vars:
+    grav_webserver_user: "{{ freckle_folder_vars.owner }}"
+    grav_user_dir: "{{ freckle_path }}"
+    grav_webserver_port: "{{ freckle_vars.grav_webserver_port | default(80) }}"
+    grav_change_user_dir_group_permissions: no
+    grav_site_name: "{{ freckle_path | basename }}"
