@@ -1,4 +1,0 @@
-doc:
-  short_help: "Grav flat-file content management system"
-  help: |
-    This blueprint helps you create a new Grav site.
