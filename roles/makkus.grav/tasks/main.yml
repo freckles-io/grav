@@ -1,0 +1,72 @@
+---
+# tasks file for grav
+- name: getting folder stats for /var/www
+  stat:
+    path: "{{ grav_dest }}"
+  register: web_root_folder
+
+- name: setting variable grav_user_dir
+  set_fact:
+    grav_user_dir_expanded: "{{ grav_user_dir | expanduser }}"
+    grav_site_dir: "{{ grav_dest }}/{{ grav_site_name }}"
+    # webserver_user: "{{ web_root_folder.stat.pw_name }}"
+    # webserver_group: "{{ web_root_folder.stat.gr_name }}"
+
+- name: checking whether site already exists
+  stat:
+    path: "{{ grav_site_dir }}"
+  register: site_folder
+
+- name: including site-install (if necessary)
+  include_tasks: setup-site.yml
+  # when: "not site_folder.stat.exists"
+
+# changing permissions according to: https://learn.getgrav.org/troubleshooting/permissions
+
+# takes too long to do it one by one
+- name: changing file permissions
+  shell: "find {{ grav_user_dir_expanded }} -type f | xargs chmod 664"
+  when: "grav_change_user_dir_group_permissions"
+  become: true
+
+- name: changing grav group ownership
+  file:
+  args:
+    dest: "{{ grav_user_dir_expanded }}"
+    group: "{{ grav_group }}"
+    recurse: yes
+  become: true
+  when: "grav_change_user_dir_group_permissions and grav_group is defined"
+
+- name: changing directory permissions
+  shell: "find {{ grav_user_dir_expanded }} -type d | xargs chmod 0775"
+  when: "grav_change_user_dir_group_permissions"
+  become: true
+
+- name: changing directory setguid
+  shell: "find {{ grav_user_dir_expanded }} -type d | xargs chmod +s"
+  when: "grav_change_user_dir_group_permissions"
+  become: true
+
+- name: restarting nginx webserver
+  service:
+  args:
+    state: restarted
+    name: "nginx"
+  become: true
+
+- name: copying docker run file
+  copy:
+    src: "{{ role_path }}/files/docker_run.sh"
+    dest: /opt/docker_run.sh
+    mode: 0775
+  become: true
+
+# - name: install supervisord
+#   install:
+#     packages;
+#       - supervisor
+#   when: use_supervisord
+
+# # - name: start php service with supervisord
+#   # supervisorctl:

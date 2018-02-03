@@ -1,0 +1,136 @@
+# tasks to install a grav site
+- name: creating temp folder
+  file:
+    path="{{ grav_temp_path }}/unpacked"
+    state=directory
+  become: yes
+
+- name: downloading grav
+  get_url:
+  args:
+    url: "{{ grav_url }}"
+    dest: "{{ grav_temp_path }}/grav.zip"
+  become: yes
+  when: "not site_folder.stat.exists"
+
+- name: installing unzip
+  package:
+  args:
+    name: "unzip"
+  become: true
+  when: "not site_folder.stat.exists"
+
+- name: unzipping grav download
+  unarchive:
+  args:
+    src: "{{ grav_temp_path }}/grav.zip"
+    dest: "{{ grav_temp_path }}/unpacked"
+    remote_src: yes
+  become: true
+  when: "not site_folder.stat.exists"
+
+- name: creating web root
+  file:
+    path: "{{ grav_dest }}"
+    state: directory
+
+- name: moving site dir in place
+  command: "mv {{ grav_temp_path }}/unpacked/grav {{ grav_site_dir }}"
+  become: true
+  when: "not site_folder.stat.exists"
+
+- name: chgroup for site dir
+  file:
+    path: "{{ grav_site_dir }}"
+    owner: "{{ grav_webserver_user }}"
+    # group: "{{ grav_webserver_group }}"
+    recurse: yes
+  become: yes
+
+- name: ensuring sites-available folder exists
+  file:
+    path: "/etc/nginx/sites-available"
+    owner: "{{ grav_webserver_user }}"
+    recurse: yes
+  become: yes
+
+- name: ensuring sites-enabled folder exists
+  file:
+    path: "/etc/nginx/sites-enabled"
+    owner: "{{ grav_webserver_user }}"
+    recurse: yes
+  become: yes
+
+
+- name: copying nginx.conf
+  copy:
+  args:
+    src: "{{ grav_site_dir }}/webserver-configs/nginx.conf"
+    force: no
+    group: root
+    owner: root
+    remote_src: yes
+    dest: "/etc/nginx/sites-available/{{ grav_site_name }}"
+  become: true
+
+- name: linking grav site to sites-enabled
+  file:
+  args:
+    dest: "/etc/nginx/sites-enabled/{{ grav_site_name }}"
+    src: "/etc/nginx/sites-available/{{ grav_site_name }}"
+    state: link
+  become: true
+
+- name: setting web root
+  lineinfile:
+  args:
+    path: "/etc/nginx/sites-available/{{ grav_site_name }}"
+    line: "    root {{ grav_site_dir }};"
+    regexp: '^\s*root.*;$'
+  become: true
+
+- name: removing php-fpm socket config
+  lineinfile:
+  args:
+    path: "/etc/nginx/sites-available/{{ grav_site_name }}"
+    state: absent
+    regexp: "fastcgi_pass unix:"
+  become: true
+
+- name: setting php-fpm pass config
+  lineinfile:
+  args:
+    path: "/etc/nginx/sites-available/{{ grav_site_name }}"
+    line: "        fastcgi_pass 127.0.0.1:9000;"
+    regexp: "fastcgi_pass 127.0.0.1:9000;"
+  become: true
+
+- name: "setting listen port to '{{ grav_webserver_port }}'"
+  lineinfile:
+  args:
+    path: "/etc/nginx/sites-available/{{ grav_site_name }}"
+    line: "    listen {{ grav_webserver_port }};"
+    regexp: "listen.*;$"
+  become: true
+
+- name: removing vanilla user dir
+  file:
+  args:
+    path: "{{ grav_site_dir }}/user"
+    state: absent
+  become: true
+
+- name: linking user dir
+  file:
+  args:
+    src: "{{ grav_user_dir_expanded }}"
+    dest: "{{ grav_site_dir }}/user"
+    state: link
+  become: true
+
+# - name: refresh gpm index for site
+#   command: bin/gpm  selfupgrade -f
+#   args:
+#     chdir: "{{ grav_site_dir }}"
+#   become_user: "{{ nginx_user }}"
+#   become: yes
