@@ -1,5 +1,9 @@
 ---
 # defaults file for grav
+grav_app_path: "/var/www/grav"
+grav_user_path: "/var/www/grav/user"
+
+
 grav_url: http://getgrav.org/download/core/grav/latest
 grav_dest: /var/www
 grav_change_user_dir_group_permissions: no

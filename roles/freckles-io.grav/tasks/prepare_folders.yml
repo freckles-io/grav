@@ -1,0 +1,61 @@
+---
+
+- name: "[check whether grav app is present]"
+  stat:
+    path: "{{ grav_app_path }}/assets"
+  register: grav_app
+
+- name: "[check whether grav user folder is present]"
+  stat:
+    path: "{{ grav_user_path }}/pages }}"
+  register: grav_user
+
+- name: "[setting some facts]"
+  set_fact:
+    grav_app_present: "{{ grav_app.stat.exists }}"
+    grav_user_present: "{{ grav_user.stat.exists }}"
+
+- name: "[creating temp folder]"
+  file:
+    path="{{ grav_temp_path }}/unpacked"
+    state=directory
+  become: yes
+
+- name: "[setting download url (no skeleton)]"
+  set_fact:
+    download_url: "{{ grav_url }}"
+  when "grav_skeleton is not defined or grav_skeleton == 'none'"
+
+- name: "[setting download url (using skeleton {{ grav_skeleton }}]"
+  set_fact:
+    download_url: "{{ grav_url }}"
+  when "grav_skeleton is defined and grav_skeleton != 'none'"
+
+- debug: var=download_url
+
+- fail: msg="SS"
+
+
+- name: downloading grav
+  get_url:
+  args:
+    url: "{{ grav_url }}"
+    dest: "{{ grav_temp_path }}/grav.zip"
+  become: yes
+  when: "not site_folder.stat.exists"
+
+- name: installing unzip
+  package:
+  args:
+    name: "unzip"
+  become: true
+  when: "not site_folder.stat.exists"
+
+- name: unzipping grav download
+  unarchive:
+  args:
+    src: "{{ grav_temp_path }}/grav.zip"
+    dest: "{{ grav_temp_path }}/unpacked"
+    remote_src: yes
+  become: true
+  when: "not site_folder.stat.exists"
