@@ -1,9 +1,21 @@
-- include_role:
-    name: makkus.grav
-  static: yes
-  vars:
-    grav_webserver_user: "{{ freckle_folder_vars.owner }}"
-    grav_user_dir: "{{ freckle_path }}"
-    grav_webserver_port: "{{ freckle_vars.grav_webserver_port | default(80) }}"
-    grav_change_user_dir_group_permissions: no
-    grav_site_name: "{{ freckle_path | basename }}"
+- name: "[setting grav app root]"
+  set_fact:
+    grav_site_name: "{{ freckle_folder_vars.grav_site_name | default('grav') }}"
+    grav_app_path: "/var/www/{{ freckle_folder_vars.grav_site_name | default('grav') }}"
+    grav_user_path: "{{ freckle_path }}"
+    grav_skeleton: "{{ freckle_folder_vars.grav_skeleton | default('none') }}"
+    grav_owner: "{{ freckles_global_vars.owner }}"
+    grav_group: "{{ freckles_global_vars.group | default(omit) }}"
+    grav_webserver_port: "{{ freckle_folder_vars.grav_webserver_port | default(80) }}"
+
+- import_role:
+    name: freckles-io.grav
+    tasks_from: prepare_folders.yml
+
+- import_role:
+    name: freckles-io.grav
+    tasks_from: setup-site.yml
+
+- import_role:
+    name: freckles-io.grav
+    tasks_from: misc.yml
