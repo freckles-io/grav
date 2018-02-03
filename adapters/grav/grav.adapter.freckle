@@ -8,6 +8,10 @@ available_vars:
     help: "(optional) the name of the skeleton to use (in the format <skeleton_name>/<version>), or an url to one"
   grav_webserver_port:
     help: "the default port where the site should be available"
+  grav_domain:
+    help: "the domain for this site, defaults to '127.0.0.1'"
+  letsencrypt_email:
+    help: "if this variable is set to something other than 'none', this adapter will request a https certificate for this domain"
 
 args:
   owner:
@@ -24,3 +28,4 @@ role-dependencies:
   - freckles-io.grav
   - geerlingguy.php
   - geerlingguy.nginx
+  - thefinn93.letsencrypt

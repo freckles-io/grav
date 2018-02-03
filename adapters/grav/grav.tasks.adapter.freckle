@@ -7,6 +7,13 @@
     grav_owner: "{{ freckles_global_vars.owner }}"
     grav_group: "{{ freckles_global_vars.group | default(omit) }}"
     grav_webserver_port: "{{ freckle_folder_vars.grav_webserver_port | default(80) }}"
+    grav_letsencrypt_email: "{{ freckles_global_vars.letsencrypt_email | default('none') }}"
+    grav_domain: "{{ freckles_global_vars.grav_domain | default('127.0.0.1') }}"
+
+- name: "[setting letsencrypt_email]"
+  set_fact:
+    grav_letsencrypt_email: false
+  when: "grav_letsencrypt_email in ['none', 'false', 'no']"
 
 - import_role:
     name: freckles-io.grav

@@ -65,6 +65,16 @@
     regexp: "listen.*;$"
   become: true
 
+- name: "setting server name to '{{ grav_domain }}'"
+  lineinfile:
+  args:
+    path: "/etc/nginx/sites-available/{{ grav_site_name }}"
+    line: "    server_name {{ grav_domain }};"
+    regexp: "server_name.*;$"
+  become: true
+
+
+
 # - name: refresh gpm index for site
 #   command: bin/gpm  selfupgrade -f
 #   args:

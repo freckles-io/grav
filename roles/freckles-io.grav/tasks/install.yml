@@ -18,3 +18,11 @@
       - php-zip
     php_webserver_daemon: "nginx"
   become: true
+
+- name: copying docker run file
+  copy:
+    src: "{{ role_path }}/files/docker_run.sh"
+    dest: /opt/docker_run.sh
+    mode: 0775
+  become: true
+  when: grav_add_docker_run_wrapper

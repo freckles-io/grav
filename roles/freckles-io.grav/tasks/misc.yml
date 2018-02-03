@@ -1,4 +1,28 @@
 ---
+- name: "[stopping nginx if running]"
+  service:
+    name: nginx
+    state: stopped
+  become: true
+  when: "grav_letsencrypt_email is defined and grav_letsencrypt_email"
+
+- name: "managing https certificate for {{ grav_domain }}"
+  include_role:
+    name: thefinn93.letsencrypt
+  vars:
+    letsencrypt_email: "{{ grav_letsencrypt_email }}"
+    letsencrypt_cert_comains:
+      - "{{ grav_domain }}"
+    letsencrypt_webroot_path: "{{ grav_app_path }}"
+    letsencrypt_renewal_command_args: '--renew-hook "systemctl restart nginx"'
+  when: "grav_letsencrypt_email is defined and grav_letsencrypt_email"
+
+- name: "[start nginx if exists]"
+  service:
+    name: nginx
+    state: started
+  become: true
+  when: "grav_letsencrypt_email is defined and grav_letsencrypt_email"
 
 - name: restarting nginx webserver
   service:
@@ -6,11 +30,4 @@
     state: restarted
     name: "nginx"
   become: true
-
-- name: copying docker run file
-  copy:
-    src: "{{ role_path }}/files/docker_run.sh"
-    dest: /opt/docker_run.sh
-    mode: 0775
-  become: true
-  when: add_docker_run_wrapper
+  when: "grav_letsencrypt_email is not defined or not grav_letsencrypt_email"
