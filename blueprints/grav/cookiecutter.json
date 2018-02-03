@@ -1,0 +1,8 @@
+{
+    "freckle_folder_name": "grav",
+    "grav_site_name": "my_site",
+    "grav_skeleton": "none",
+    "grav_domain": "127.0.0.1",
+    "grav_webserver_port": 80,
+    "letsencrypt_email": "none"
+}
