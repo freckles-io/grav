@@ -14,7 +14,6 @@
 
 - name: "[setting letsencrypt_email]"
   set_fact:
-    grav_letsencrypt_email: false
     webserver_enable_https: false
   when: "grav_letsencrypt_email in ['none', 'false', 'no']"
 
