@@ -74,10 +74,11 @@
 - name: adding http -> https redirect
   set_fact:
     nginx_vhost_http:
-      - listen: "{{ webserver_http_port }}"
+      - listen: "{{ webserver_http_port }} xxx"
         server_name: "{{ webserver_domain }}"
         return: "301 https://{{ webserver_domain }}$request_uri"
         filename: "{{ webserver_domain }}.80.conf"
+        state: "present"
   when: webserver_enable_https
 
 - name: "[setting webserver vars]"
@@ -88,6 +89,7 @@
         server_name: "{{ webserver_domain }}"
         index: "index.html index.php"
         root: "{{ grav_app_path }}"
+        state: "present"
         extra_parameters: |
           {{ nginx_extra_parameters }}
 
