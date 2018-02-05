@@ -6,7 +6,6 @@
     webserver_http_port: "{{ grav_webserver_port }}"
     webserver_https_port: 443
     webserver_domain: "{{ grav_domain }}"
-    webserver_letsencrypt_staging: "{{ grav_letsencrypt_staging | default(false) }}"
 
     webserver_enable_php: true
     php_packages_extra:
@@ -14,6 +13,7 @@
     php_enable_php_fpm: true
 
     webserver_letsencrypt_email: "{{ grav_letsencrypt_email }}"
+    webserver_letsencrypt_staging: "{{ grav_letsencrypt_staging | default(false) }}"
 
     nginx_extra_parameters: |
         location / {
@@ -74,7 +74,7 @@
 - name: adding http -> https redirect
   set_fact:
     nginx_vhost_http:
-      - listen: "webserver_http_port"
+      - listen: "{{ webserver_http_port }}"
         server_name: "{{ webserver_domain }}"
         return: "301 https://{{ webserver_domain }}$request_uri"
         filename: "{{ webserver_domain }}.80.conf"
