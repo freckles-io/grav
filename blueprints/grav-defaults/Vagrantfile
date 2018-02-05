@@ -7,7 +7,7 @@ Vagrant.configure("2") do |config|
 
   # config.vm.box_check_update = false
 
-  config.vm.network "forwarded_port", guest: 8280, host: 8280
+  config.vm.network "forwarded_port", guest: {{ cookiecutter.grav_website_port }}, host: {{ cookiecutter.grav_website_port }}
 
   config.vm.synced_folder ".", "/vagrant", id: "vagrant"
 
