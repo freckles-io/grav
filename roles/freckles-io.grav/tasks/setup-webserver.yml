@@ -6,6 +6,7 @@
     webserver_http_port: "{{ grav_webserver_port }}"
     webserver_https_port: 443
     webserver_domain: "{{ grav_domain }}"
+    webserver_letsencrypt_staging: "{{ grav_letsencrypt_staging | default(false) }}"
 
     webserver_enable_php: true
     php_packages_extra:

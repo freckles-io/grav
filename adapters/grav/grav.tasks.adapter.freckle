@@ -8,6 +8,7 @@
     grav_skeleton: "{{ freckle_folder_vars.grav_skeleton | default('none') }}"
     grav_webserver_port: "{{ freckle_folder_vars.grav_webserver_port | default(80) }}"
     grav_letsencrypt_email: "{{ freckles_global_vars.grav_letsencrypt_email | default('none') }}"
+    grav_letsencrypt_staging: "{{ freckles_global_vars.grav_letsencrypt_staging | default(false) }}"
     webserver_enable_https: true
     grav_domain: "{{ freckles_global_vars.grav_domain | default('127.0.0.1') }}"
 
