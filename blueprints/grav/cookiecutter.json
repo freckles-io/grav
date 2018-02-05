@@ -4,5 +4,5 @@
     "grav_skeleton": "none",
     "grav_domain": "127.0.0.1",
     "grav_webserver_port": 80,
-    "letsencrypt_email": "none"
+    "grav_letsencrypt_email": "none"
 }

@@ -1,9 +1,0 @@
-- name: "[setting facts]"
-  set_fact:
-    grav_owner: "{{ freckles_global_vars.owner }}"
-    grav_group: "{{ freckles_global_vars.group | default(omit) }}"
-
-- import_role:
-    name: freckles-io.grav
-    tasks_from: install.yml
-

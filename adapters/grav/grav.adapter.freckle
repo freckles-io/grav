@@ -10,7 +10,7 @@ available_vars:
     help: "the default port where the site should be available"
   grav_domain:
     help: "the domain for this site, defaults to '127.0.0.1'"
-  letsencrypt_email:
+  grav_letsencrypt_email:
     help: "if this variable is set to something other than 'none', this adapter will request a https certificate for this domain"
 
 args:
@@ -25,6 +25,7 @@ args:
     type: int
 
 role-dependencies:
+  - freckles-io.webserver
   - freckles-io.grav
   - geerlingguy.php
   - geerlingguy.nginx

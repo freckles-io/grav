@@ -1,0 +1,105 @@
+- name: "[setting facts]"
+  set_fact:
+    webserver_type: "nginx"
+    webserver_user: "{{ grav_owner }}"
+    webserver_group: "{{ grav_group | default(omit) }}"
+    webserver_http_port: "{{ grav_webserver_port }}"
+    webserver_https_port: 443
+    webserver_domain: "{{ grav_domain }}"
+
+    webserver_enable_php: true
+    php_packages_extra:
+      - php-zip
+    php_enable_php_fpm: true
+    php_fpm_pool_user: "{{ grav_owner }}"
+
+    webserver_letsencrypt_email: "{{ grav_letsencrypt_email }}"
+
+    nginx_extra_parameters: |
+        location / {
+            try_files $uri $uri/ /index.php?$query_string;
+        }
+        ## End - Index
+
+        ## Begin - Security
+        # deny all direct access for these folders
+        location ~* /(\.git|cache|bin|logs|backup|tests)/.*$ { return 403; }
+        # deny running scripts inside core system folders
+        location ~* /(system|vendor)/.*\.(txt|xml|md|html|yaml|yml|php|pl|py|cgi|twig|sh|bat)$ { return 403; }
+        # deny running scripts inside user folder
+        location ~* /user/.*\.(txt|md|yaml|yml|php|pl|py|cgi|twig|sh|bat)$ { return 403; }
+        # deny access to specific files in the root folder
+        location ~ /(LICENSE\.txt|composer\.lock|composer\.json|nginx\.conf|web\.config|htaccess\.txt|\.htaccess) { return 403; }
+        ## End - Security
+
+        ## Begin - PHP
+        location ~ \.php$ {
+            # Choose either a socket or TCP/IP address
+            fastcgi_pass 127.0.0.1:9000;
+
+            fastcgi_split_path_info ^(.+\.php)(/.+)$;
+            fastcgi_index index.php;
+            include fastcgi_params;
+            fastcgi_param SCRIPT_FILENAME $document_root/$fastcgi_script_name;
+        }
+        ## End - PHP
+
+- name: "[setting default port when using https]"
+  set_fact:
+    webserver_default_port: "{{ webserver_https_port }}"
+  when: "webserver_enable_https"
+
+- name: "[setting default port when not using https]"
+  set_fact:
+    webserver_default_port: "{{ webserver_http_port }}"
+  when: "not webserver_enable_https"
+
+- name: setting https options for 'nginx'
+  set_fact:
+    nginx_https_options_1: "ssl http2"
+    nginx_https_options_2: |
+      ssl_certificate      /etc/letsencrypt/live/{{ webserver_domain }}/fullchain.pem;
+      ssl_certificate_key  /etc/letsencrypt/live/{{ webserver_domain }}/privkey.pem;
+      ssl_trusted_certificate   /etc/letsencrypt/live/{{ webserver_domain }}/fullchain.pem;
+      ssl_protocols        TLSv1.1 TLSv1.2;
+      ssl_ciphers          HIGH:!aNULL:!MD5;
+  when: webserver_enable_https
+
+- name: setting empty https nginx options
+  set_fact:
+    nginx_https_options_1: ""
+    nginx_https_options_2: ""
+  when: not webserver_enable_https
+
+- name: adding http -> https redirect
+  set_fact:
+    nginx_vhost_http:
+      - listen: "webserver_http_port"
+        server_name: "{{ webserver_domain }}"
+        return: "301 https://{{ webserver_domain }}$request_uri"
+        filename: "{{ webserver_domain }}.80.conf"
+  when: webserver_enable_https
+
+- name: "[setting webserver vars]"
+  set_fact:
+    nginx_remove_default_vhost: true
+    nginx_vhosts:
+      - listen: "{{ webserver_default_port }} {{ nginx_https_options_1 }}"
+        server_name: "{{ webserver_domain }}"
+        index: "index.html index.php"
+        root: "{{ grav_app_path }}"
+        extra_parameters: |
+          {{ nginx_extra_parameters }}
+
+          {{ nginx_https_options_2 }}
+
+- name: "[adding http -> https redirect if necessary]"
+  set_fact:
+    nginx_vhosts: "{{ nginx_vhost_http }} + {{ nginx_vhosts }}"
+  when: webserver_enable_https
+
+- name: "[starting webserver role]"
+  include_role:
+    name: freckles-io.webserver
+  become: true
+
