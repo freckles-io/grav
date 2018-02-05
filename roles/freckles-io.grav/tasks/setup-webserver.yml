@@ -11,7 +11,6 @@
     php_packages_extra:
       - php-zip
     php_enable_php_fpm: true
-    php_fpm_pool_user: "{{ grav_owner }}"
 
     webserver_letsencrypt_email: "{{ grav_letsencrypt_email }}"
 
