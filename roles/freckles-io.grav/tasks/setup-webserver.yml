@@ -84,6 +84,7 @@
 - name: "[setting webserver vars]"
   set_fact:
     nginx_remove_default_vhost: true
+    nginx_sendfile: "off"                  # with this 'on' theme development doesn't really work
     nginx_vhosts:
       - listen: "{{ webserver_default_port }} {{ nginx_https_options_1 }}"
         server_name: "{{ webserver_domain }}"
