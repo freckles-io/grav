@@ -26,3 +26,6 @@
     name: freckles-io.grav
     tasks_from: setup-webserver.yml
 
+- import_role:
+    name: freckles-io.grav
+    tasks_from: misc.yml
