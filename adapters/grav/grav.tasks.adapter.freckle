@@ -11,6 +11,7 @@
     grav_letsencrypt_staging: "{{ freckles_global_vars.grav_letsencrypt_staging | default(false) }}"
     webserver_enable_https: true
     grav_domain: "{{ freckles_global_vars.grav_domain | default('127.0.0.1') }}"
+    grav_add_docker_run_wrapper: "{{ freckle_folder_vars.grav_add_docker_run_wrapper | default(false) }}"
 
 - name: "[setting letsencrypt_email]"
   set_fact:
