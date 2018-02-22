@@ -6,3 +6,11 @@
 
 - name: including site-install tasks
   include_tasks: setup-webserver.yml
+
+- name: copying docker run file
+  copy:
+    src: "{{ role_path }}/files/grav_run.sh"
+    dest: /opt/grav_run.sh
+    mode: 0775
+  become: true
+  when: grav_add_docker_run_wrapper

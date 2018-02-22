@@ -13,6 +13,8 @@ grav_add_docker_run_wrapper: true
 grav_domain: 127.0.0.1
 grav_letsencrypt_email: false
 
+grav_add_docker_run_wrapper: false
+
 # not used for now
 # use_supervisord: yes
 # grav_change_user_dir_group_permissions: no
