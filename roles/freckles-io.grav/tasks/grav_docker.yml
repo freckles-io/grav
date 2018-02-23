@@ -22,14 +22,22 @@
     mode: 0775
   become: true
 
-- name: "[create grav.log file]"
-  command: touch /var/log/grav.log
-  become: true
+# - name: "[create grav.log file]"
+#   command: touch /var/log/grav.log
+#   become: true
 
-- name: "[ensure grav log file permissions]"
+# - name: "[ensure grav log file permissions]"
+#   file:
+#     path: "/var/log/grav.log"
+#     state: file
+#     owner: "{{ grav_docker_user }}"
+#     group: "{{ grav_docker_group }}"
+#   become: true
+
+- name: "[creating php-fpm pid dir]"
   file:
-    path: "/var/log/grav.log"
-    state: file
+    path: "/run/php"
+    state: directory
     owner: "{{ grav_docker_user }}"
     group: "{{ grav_docker_group }}"
   become: true
@@ -37,16 +45,31 @@
 - name: "[setting supervisord facts]"
   set_fact:
     supervisor_programs:
-      - name: 'webserver'
-        command: /opt/grav_run.sh
+      - name: 'nginx'
+        command: /usr/sbin/nginx -c /etc/nginx/nginx.conf  -g 'daemon off;'
         state: present
         configuration: |
-          user=root
+          process_name=%(program_name)s_%(process_num)02d
+          numprocs=1
+          autostart=true
+          autorestart=false
+          startsecs=0
           redirect_stderr=true
-          stderr_logfile=/var/log/grav.log
-          stdout_logfile=/var/log/grav.log
-          killasgroup=true
-          stopasgroup=true
+          stdout_logfile=/dev/stdout
+          stdout_logfile_maxbytes=0
+          user=root
+      - name: 'php-fpm'
+        command: /usr/sbin/php-fpm7.0 -R -F -c /etc/php/7.0/fpm/php-fpm.conf
+        state: present
+        configuration: |
+          process_name=%(program_name)s_%(process_num)02d
+          numprocs=1
+          autostart=true
+          autorestart=false
+          startsecs=0
+          redirect_stderr=true
+          stdout_logfile=/dev/stdout
+          stdout_logfile_maxbytes=0
 
 - name: "[creating sass precompiler service]"
   set_fact:
@@ -57,10 +80,8 @@
         configuration: |
           user={{ grav_docker_user }}
           redirect_stderr=true
-          stderr_logfile=/var/log/grav.log
-          stdout_logfile=/var/log/grav.log
-          killasgroup=true
-          stopasgroup=true
+          stdout_logfile=/dev/stdout
+          stdout_logfile_maxbytes=0
   when: grav_dev
 
 - name: "[adding sass precompiler service]"
