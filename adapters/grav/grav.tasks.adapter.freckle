@@ -42,8 +42,8 @@
 
 - name: "[setting docker uid/gid]"
   set_fact:
-      grav_docker_uid: freckle_folder_stat.stat.uid
-      grav_docker_gid: freckle_folder_stat.stat.gid
+      grav_docker_uid: "{{ freckle_folder_stat.stat.uid }}"
+      grav_docker_gid: "{{ freckle_folder_stat.stat.gid }}"
   when: grav_docker
 
 - import_role:
