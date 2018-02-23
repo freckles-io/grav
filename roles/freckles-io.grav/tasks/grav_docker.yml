@@ -1,7 +1,73 @@
 ---
+- name: creating grav group
+  group:
+    name: "{{ grav_docker_group }}"
+    gid: "{{ grav_docker_gid }}"
+    state: "present"
+
+- name: creating grav user
+  user:
+    name: "{{ grav_docker_user }}"
+    uid: "{{ grav_docker_uid }}"
+    group: "{{ grav_docker_group }}"
+    shell: "/bin/bash"
+    state: "present"
+
 - name: copying wrapper script for docker
   copy:
     src: "{{ role_path }}/files/grav_run.sh"
     dest: /opt/grav_run.sh
+    owner: "{{ grav_docker_user }}"
+    group: "{{ grav_docker_group }}"
     mode: 0775
   become: true
+
+- name: "[create grav.log file]"
+  command: touch /var/log/grav.log
+  become: true
+
+- name: "[ensure grav log file permissions]"
+  file:
+    path: "/var/log/grav.log"
+    state: file
+    owner: "{{ grav_docker_user }}"
+    group: "{{ grav_docker_group }}"
+  become: true
+
+- name: "[setting supervisord facts]"
+  set_fact:
+    supervisor_programs:
+      - name: 'webserver'
+        command: /opt/grav_run.sh
+        state: present
+        configuration: |
+          user=root
+          redirect_stderr=true
+          stderr_logfile=/var/log/grav.log
+          stdout_logfile=/var/log/grav.log
+          killasgroup=true
+          stopasgroup=true
+
+- name: "[creating sass precompiler service]"
+  set_fact:
+    supervisor_sass:
+      - name: 'sass_pre_compiler'
+        command: /opt/grav_dev_freckles.sh
+        state: present
+        configuration: |
+          user={{ grav_docker_user }}
+          redirect_stderr=true
+          stderr_logfile=/var/log/grav.log
+          stdout_logfile=/var/log/grav.log
+          killasgroup=true
+          stopasgroup=true
+  when: grav_dev
+
+- name: "[adding sass precompiler service]"
+  set_fact:
+    supervisor_programs: "{{ supervisor_programs }} + {{ supervisor_sass }}"
+
+
+- name: installing supervisord
+  include_role:
+    name: geerlingguy.supervisor

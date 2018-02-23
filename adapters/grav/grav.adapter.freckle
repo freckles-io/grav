@@ -43,3 +43,4 @@ role-dependencies:
   - geerlingguy.nginx
   - thefinn93.letsencrypt
   - tumf.systemd-service
+  - geerlingguy.supervisor
