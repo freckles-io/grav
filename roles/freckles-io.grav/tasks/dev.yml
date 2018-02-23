@@ -40,7 +40,7 @@
     systemd_service_Service_ExecStart: "/opt/grav_dev_{{ grav_site_name }}.sh"
     systemd_service_Service_Type: "simple"
   become: true
-  when: "grav_sass_src != false and grav_sass_service"
+  when: "grav_sass_src != false and grav_sass_service and not grav_docker"
 
 - name: "enable and start sass/scss pre-compile service"
   service:
@@ -48,4 +48,4 @@
     enabled: yes
     state: restarted
   become: true
-  when: "grav_sass_src != false and grav_sass_service"
+  when: "grav_sass_src != false and grav_sass_service and not grav_docker"
