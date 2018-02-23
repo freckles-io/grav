@@ -71,3 +71,5 @@
 - name: installing supervisord
   include_role:
     name: geerlingguy.supervisor
+  vars:
+    supervisor_virtualenv: "/opt/supervisord"
