@@ -94,3 +94,4 @@
     name: geerlingguy.supervisor
   vars:
     supervisor_virtualenv: "/opt/supervisord"
+    supervisor_nodaemon: true
