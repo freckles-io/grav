@@ -12,6 +12,18 @@ available_vars:
     help: "the domain for this site, defaults to '127.0.0.1'"
   grav_letsencrypt_email:
     help: "if this variable is set to something other than 'none', this adapter will request a https certificate for this domain"
+  grav_docker:
+    help: "whether to install docker related scripts, defaults to 'false'"
+  grav_dev:
+    help: "whether to install development related scripts, defaults to 'false'"
+  grav_sass_service:
+    help: "whether to enable the grav_sass pre-compile service. defaults to 'true', only has an effect if 'grav_dev' is enabled."
+  grav_sass_src:
+    help: "the path to your (main) sass/scss folder, defaults to 'false'. If set, and 'grav_set' is enabled, a sass preprocessor is installed as well as a helper script to use it."
+  grav_sass_includes:
+    help: "list of additional sass/scss folders"
+  grav_sass_poll:
+    help: "whether to use the sass '--poll' option, usefule if you use for example Virtualbox and change files on the host system, defaults to 'false'"
 
 args:
   owner:
@@ -30,3 +42,4 @@ role-dependencies:
   - geerlingguy.php
   - geerlingguy.nginx
   - thefinn93.letsencrypt
+  - tumf.systemd-service

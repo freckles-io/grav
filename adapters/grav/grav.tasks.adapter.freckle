@@ -11,7 +11,12 @@
     grav_letsencrypt_staging: "{{ freckles_global_vars.grav_letsencrypt_staging | default(false) }}"
     webserver_enable_https: true
     grav_domain: "{{ freckles_global_vars.grav_domain | default('127.0.0.1') }}"
-    grav_add_docker_run_wrapper: "{{ freckle_folder_vars.grav_add_docker_run_wrapper | default(false) }}"
+    grav_docker: "{{ freckle_folder_vars.grav_docker | default(false) }}"
+    grav_dev: "{{ freckle_folder_vars.grav_dev | default(false) }}"
+    grav_sass_service: "{{ freckle_folder_vars.grav_sass_service | default(true) }}"
+    grav_sass_src: "{{ freckle_folder_vars.grav_sass_src | default(false) }}"
+    grav_sass_includes: "{{ freckle_folder_vars.grav_sass_includes | default([]) }}"
+    grav_sass_poll: "{{ freckle_folder_vars.grav_sass_poll | default(false) }}"
 
 - name: "[setting letsencrypt_email]"
   set_fact:
@@ -26,6 +31,16 @@
     name: freckles-io.grav
     tasks_from: setup-webserver.yml
 
+# - import_role:
+#     name: freckles-io.grav
+#     tasks_from: misc.yml
+
+- import_role:
+      name: freckles-io.grav
+      tasks_from: grav_docker.yml
+  when: grav_docker
+
 - import_role:
     name: freckles-io.grav
-    tasks_from: misc.yml
+    tasks_from: dev.yml
+  when: grav_dev

@@ -12,7 +12,12 @@ grav_webserver_port: 80
 grav_domain: 127.0.0.1
 grav_letsencrypt_email: false
 
-grav_add_docker_run_wrapper: false
+grav_docker: false
+
+grav_dev: false
+grav_sass_service: true
+grav_sass_src: false
+grav_sass_poll: false
 
 # not used for now
 # use_supervisord: yes

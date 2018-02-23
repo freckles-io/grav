@@ -5,5 +5,3 @@
     dest: /opt/grav_run.sh
     mode: 0775
   become: true
-  when: grav_add_docker_run_wrapper
-
