@@ -15,7 +15,7 @@ grav_letsencrypt_email: false
 grav_docker: false
 grav_docker_user: grav
 # grav_docker_uid: 1000
-grav_docker_group: grav
+# grav_docker_group: grav
 # grav_docker_gid: 1000
 
 grav_dev: false

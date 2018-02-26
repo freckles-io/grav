@@ -1,19 +1,20 @@
 ---
-- name: creating grav group
+- name: "creating grav group for docker: {{ grav_docker_group }}"
   group:
     name: "{{ grav_docker_group }}"
     gid: "{{ grav_docker_gid | default(omit) }}"
     state: "present"
+  when: grav_docker_group is defined
 
-- name: creating grav user
+- name: "creating grav user for docker: {{ grav_docker_user }}"
   user:
     name: "{{ grav_docker_user }}"
     uid: "{{ grav_docker_uid | default(omit) }}"
-    group: "{{ grav_docker_group }}"
+    group: "{{ grav_docker_group | default(omit) }}"
     shell: "/bin/bash"
     state: "present"
 
-- name: copying wrapper script for docker
+- name: copying wrapper run script for docker
   copy:
     src: "{{ role_path }}/files/docker_run.sh"
     dest: /opt/docker_run.sh
