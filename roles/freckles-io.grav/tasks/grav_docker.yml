@@ -82,12 +82,12 @@
           redirect_stderr=true
           stdout_logfile=/dev/stdout
           stdout_logfile_maxbytes=0
-  when: grav_dev
+  when: "use_grav_sass is defined and use_grav_sass"
 
 - name: "[adding sass precompiler service]"
   set_fact:
     supervisor_programs: "{{ supervisor_programs }} + {{ supervisor_sass }}"
-  when: grav_dev
+  when: "use_grav_sass is defined and use_grav_sass"
 
 # - name: install virtualenv
   # install:

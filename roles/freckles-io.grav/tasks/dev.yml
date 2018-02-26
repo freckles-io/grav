@@ -1,4 +1,13 @@
 ---
+- name: "[set use_grav_sass var]"
+  set_fact:
+    use_grav_sass: false
+
+- name: "[set use_grav_sass var to true]"
+  set_fact:
+    use_grav_sass: true
+  when: "grav_sass_src != false and grav_sass_service"
+
 - name: installing sass
   install:
     packages:
@@ -6,7 +15,7 @@
           pkgs:
             debian: ruby-sass
             other: ignore
-  when: "grav_sass_src != false and grav_sass_service"
+  when: "use_grav_sass"
 
 - name: "[disable grav_sass_poll_option]"
   set_fact:
@@ -24,7 +33,7 @@
     dest: "/opt/grav_dev_{{ grav_site_name }}.sh"
     mode: 0775
   become: true
-  when: "grav_sass_src != false and grav_sass_service"
+  when: "use_grav_sass"
 
 - name: installing sass pre-compile systemd service
   include_role:
@@ -40,7 +49,7 @@
     systemd_service_Service_ExecStart: "/opt/grav_dev_{{ grav_site_name }}.sh"
     systemd_service_Service_Type: "simple"
   become: true
-  when: "grav_sass_src != false and grav_sass_service and not grav_docker"
+  when: "use_grav_sass and not grav_docker"
 
 - name: "enable and start sass/scss pre-compile service"
   service:
@@ -48,4 +57,4 @@
     enabled: yes
     state: restarted
   become: true
-  when: "grav_sass_src != false and grav_sass_service and not grav_docker"
+  when: "use_grav_sass and not grav_docker"
