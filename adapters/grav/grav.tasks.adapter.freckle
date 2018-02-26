@@ -43,7 +43,7 @@
 - name: "[setting docker uid/gid]"
   set_fact:
       grav_docker_user: "{{ grav_owner }}"
-      grav_docker_group": "{{ grav_group | default(omit) }}"
+      grav_docker_group: "{{ grav_group | default(omit) }}"
       grav_docker_uid: "{{ freckle_folder_stat.stat.uid }}"
       grav_docker_gid: "{{ freckle_folder_stat.stat.gid }}"
   when: grav_docker
