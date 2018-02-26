@@ -87,7 +87,12 @@
 - name: "[adding sass precompiler service]"
   set_fact:
     supervisor_programs: "{{ supervisor_programs }} + {{ supervisor_sass }}"
+  when: grav_dev
 
+# - name: install virtualenv
+  # install:
+    # packages:
+      # - virtualenv
 
 - name: installing supervisord
   include_role:
