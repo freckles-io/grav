@@ -2,13 +2,13 @@
 - name: creating grav group
   group:
     name: "{{ grav_docker_group }}"
-    gid: "{{ grav_docker_gid }}"
+    gid: "{{ grav_docker_gid | default(omit) }}"
     state: "present"
 
 - name: creating grav user
   user:
     name: "{{ grav_docker_user }}"
-    uid: "{{ grav_docker_uid }}"
+    uid: "{{ grav_docker_uid | default(omit) }}"
     group: "{{ grav_docker_group }}"
     shell: "/bin/bash"
     state: "present"
