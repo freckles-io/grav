@@ -1,4 +1,4 @@
-- name: "[setting grav app root]"
+- name: "[setting grav adapter vars]"
   set_fact:
     grav_owner: "{{ freckles_global_vars.owner }}"
     grav_group: "{{ freckles_global_vars.group | default(omit) }}"
@@ -49,11 +49,12 @@
   when: grav_docker
 
 - import_role:
+    name: freckles-io.grav
+    tasks_from: dev.yml
+  when: grav_dev
+
+- import_role:
       name: freckles-io.grav
       tasks_from: grav_docker.yml
   when: grav_docker
 
-- import_role:
-    name: freckles-io.grav
-    tasks_from: dev.yml
-  when: grav_dev
