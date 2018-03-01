@@ -1,6 +1,3 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-mkdir -p /run/php
-
-php-fpm7.0 -R
-nginx -g 'daemon off;'
+/opt/supervisord/bin/supervisord -c /etc/supervisor/supervisord.conf

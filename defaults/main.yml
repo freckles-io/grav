@@ -1,8 +1,29 @@
 ---
 # defaults file for grav
-grav_url: http://getgrav.org/download/core/grav/latest
+grav_app_path: "/var/www/grav"
+grav_user_path: "/var/www/grav/user"
+
+grav_owner: www-data
+# grav_group: www-data
+
 grav_dest: /var/www
-grav_change_user_dir_group_permissions: no
 grav_webserver_port: 80
-grav_webserver_user: www-data
+
+grav_domain: 127.0.0.1
+grav_letsencrypt_email: false
+
+grav_docker: false
+grav_docker_user: grav
+# grav_docker_uid: 1000
+# grav_docker_group: grav
+# grav_docker_gid: 1000
+
+grav_dev: false
+grav_sass_service: true
+grav_sass_src: false
+grav_sass_poll: false
+
+# not used for now
 # use_supervisord: yes
+# grav_change_user_dir_group_permissions: no
+# grav_webserver_user: www-data

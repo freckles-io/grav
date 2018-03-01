@@ -1,0 +1,124 @@
+---
+
+- name: "[check whether grav app is present]"
+  stat:
+    path: "{{ grav_app_path }}/assets"
+  register: grav_app
+
+- name: "[check whether grav user folder is present]"
+  stat:
+    path: "{{ grav_user_path }}/pages"
+  register: grav_user
+
+- name: "[setting some facts]"
+  set_fact:
+    grav_app_present: "{{ grav_app.stat.exists }}"
+    grav_user_present: "{{ grav_user.stat.exists }}"
+
+- name: "[deleting potentially existing temp folder from previous run]"
+  file:
+    path: "{{ grav_temp_path }}"
+    state: absent
+  become: true
+  when: "not grav_app_present or not grav_user_present"
+- name: "[creating temp folder]"
+  file:
+    path="{{ grav_temp_path }}/unpacked"
+    state=directory
+  become: yes
+
+- name: "[setting download url (no skeleton)]"
+  set_fact:
+    download_url: "{{ grav_url }}"
+    download_name: "Grav core"
+  when: "grav_skeleton is not defined or grav_skeleton == 'none'"
+
+- name: "[setting download url (using skeleton {{ grav_skeleton }}]"
+  set_fact:
+    download_url: "{{ grav_skeleton_base_url }}/{{ grav_skeleton }}"
+    download_name: "skeleton '{{ grav_skeleton }}'"
+  when: "grav_skeleton is defined and grav_skeleton != 'none' and not grav_skeleton.startswith('http')"
+
+- name: "[setting download url (using skeleton {{ grav_skeleton }}]"
+  set_fact:
+    download_url: "{{ grav_skeleton }}"
+    download_name: "skeleton from: '{{ grav_skeleton }}'"
+  when: "grav_skeleton is defined and grav_skeleton != 'none' and grav_skeleton.startswith('http')"
+
+- name: "downloading {{ download_name }}"
+  get_url:
+  args:
+    url: "{{ download_url }}"
+    dest: "{{ grav_temp_path }}/grav.zip"
+  become: yes
+  when: "not grav_app_present or not grav_user_present"
+
+- name: installing unzip
+  package:
+  args:
+    name: "unzip"
+  become: true
+  when: "not grav_app_present or not grav_user_present"
+
+- name: unzipping grav download
+  unarchive:
+  args:
+    src: "{{ grav_temp_path }}/grav.zip"
+    dest: "{{ grav_temp_path }}/unpacked"
+    owner: "{{ grav_owner }}"
+    group: "{{ grav_group | default(omit) }}"
+    remote_src: yes
+  become: true
+  when: "not grav_app_present or not grav_user_present"
+
+- name: "[find extracted child folder]"
+  command: "ls {{ grav_temp_path }}/unpacked/"
+  register: folder_ls
+  become: true
+
+- name: "[setting folder name]"
+  set_fact:
+    grav_copy_source: "{{ grav_temp_path }}/unpacked/{{ folder_ls.stdout }}"
+
+- name: moving skeleton user folder
+  shell: "mv {{ grav_copy_source }}/user/* {{ grav_user_path }}"
+  become: true
+  when: "not grav_user_present"
+
+- name: deleting skeleton user folder from source
+  file:
+    path: "{{ grav_copy_source }}/user/"
+    state: absent
+  become: true
+  when: "not grav_app_present or not grav_user_present"
+
+- name: "[creating grav app folder]"
+  file:
+    path: "{{ grav_app_path }}"
+    recurse: true
+    state: directory
+    owner: "{{ grav_owner }}"
+    group: "{{ grav_group | default(omit) }}"
+  become: yes
+
+- name: copying grav app folder
+  shell: "mv {{ grav_copy_source }}/* {{ grav_app_path }}"
+  become: true
+  when: "not grav_app_present"
+
+- name: deleting downloaded archive
+  file:
+    path: "{{ grav_temp_path }}"
+    state: absent
+  become: true
+  when: "not grav_app_present or not grav_user_present"
+
+- name: "linking user dir to {{ grav_app_path }}/user"
+  file:
+  args:
+    src: "{{ grav_user_path }}"
+    dest: "{{ grav_app_path }}/user"
+    owner: "{{ grav_owner }}"
+    group: "{{ grav_group | default(omit) }}"
+    state: link
+  become: true
