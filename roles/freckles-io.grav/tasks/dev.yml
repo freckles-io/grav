@@ -1,0 +1,60 @@
+---
+- name: "[set use_grav_sass var]"
+  set_fact:
+    use_grav_sass: false
+
+- name: "[set use_grav_sass var to true]"
+  set_fact:
+    use_grav_sass: true
+  when: "grav_sass_src != false and grav_sass_service"
+
+- name: installing sass
+  install:
+    packages:
+      - sass:
+          pkgs:
+            debian: ruby-sass
+            other: ignore
+  when: "use_grav_sass"
+
+- name: "[disable grav_sass_poll_option]"
+  set_fact:
+    grav_sass_poll_option: ""
+  when: not grav_sass_poll
+
+- name: "[enable grav_sass_poll_option]"
+  set_fact:
+    grav_sass_poll_option: "--poll"
+  when: grav_sass_poll
+
+- name: copying wrapper script for development
+  template:
+    src: "{{ role_path }}/files/grav_dev.sh"
+    dest: "/opt/grav_dev_{{ grav_site_name }}.sh"
+    mode: 0775
+  become: true
+  when: "use_grav_sass"
+
+- name: installing sass pre-compile systemd service
+  include_role:
+    name: tumf.systemd-service
+  vars:
+    systemd_service_name: "sass_{{ grav_site_name }}"
+    systemd_service_Unit_Description: "{{ grav_site_name }} sass/scss pre-compilation service"
+    systemd_service_Install_WantedBy: multi-user.target
+    systemd_service_Service_Restart: always
+    systemd_service_Service_User: "{{ freckle_owner }}"
+    # systemd_service_Service_Group: "{{ freckle_folder_vars.group | default(omit) }}" --> can't use omit filter in include_role :-(
+    systemd_service_Service_WorkingDirectory: "{{ freckle_path }}"
+    systemd_service_Service_ExecStart: "/opt/grav_dev_{{ grav_site_name }}.sh"
+    systemd_service_Service_Type: "simple"
+  become: true
+  when: "use_grav_sass and not grav_docker"
+
+- name: "enable and start sass/scss pre-compile service"
+  service:
+    name: "sass_{{ grav_site_name }}"
+    enabled: yes
+    state: restarted
+  become: true
+  when: "use_grav_sass and not grav_docker"

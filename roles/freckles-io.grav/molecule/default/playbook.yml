@@ -1,0 +1,10 @@
+---
+- name: Converge
+  hosts: all
+
+  vars:
+    grav_user_dir: /home/markus/projects/freckles_website
+    grav_site_name: molecule_test
+
+  roles:
+    - role: makkus.grav
