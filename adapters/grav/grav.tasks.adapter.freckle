@@ -1,7 +1,7 @@
 - name: "[setting grav adapter vars]"
   set_fact:
-    grav_owner: "{{ freckles_global_vars.owner }}"
-    grav_group: "{{ freckles_global_vars.group | default(omit) }}"
+    grav_owner: "{{ freckle_folder_vars.owner }}"
+    grav_group: "{{ freckle_folder_vars.group | default(omit) }}"
     grav_site_name: "{{ freckle_folder_vars.grav_site_name | default('grav') }}"
     grav_app_path: "/var/www/{{ freckle_folder_vars.grav_site_name | default('grav') }}"
     grav_user_path: "{{ freckle_path }}"
