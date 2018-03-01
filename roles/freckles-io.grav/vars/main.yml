@@ -1,5 +1,0 @@
----
-# vars file for grav
-grav_url: http://getgrav.org/download/core/grav/latest
-grav_temp_path: "/tmp/grav_temp"
-grav_skeleton_base_url: "https://getgrav.org/download/skeletons"
