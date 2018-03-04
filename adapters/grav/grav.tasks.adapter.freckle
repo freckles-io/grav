@@ -6,10 +6,10 @@
     grav_app_path: "/var/www/{{ freckle_folder_vars.grav_site_name | default('grav') }}"
     grav_user_path: "{{ freckle_path }}"
     grav_skeleton: "{{ freckle_folder_vars.grav_skeleton | default('none') }}"
-    grav_webserver_port: "{{ freckle_folder_vars.grav_webserver_port | default(80) }}"
+    grav_webserver_port: "{{ freckle_folder_vars.grav_port | default(80) }}"
     grav_letsencrypt_email: "{{ freckles_global_vars.grav_letsencrypt_email | default('none') }}"
     grav_letsencrypt_staging: "{{ freckles_global_vars.grav_letsencrypt_staging | default(false) }}"
-    webserver_enable_https: true
+    webserver_enable_https: true  # will be overwritten if necessary
     grav_domain: "{{ freckles_global_vars.grav_domain | default('127.0.0.1') }}"
     grav_docker: "{{ freckle_folder_vars.freckle_docker | default(false) }}"
     grav_dev: "{{ freckle_folder_vars.grav_dev | default(false) }}"
@@ -17,6 +17,9 @@
     grav_sass_src: "{{ freckle_folder_vars.grav_sass_src | default(false) }}"
     grav_sass_includes: "{{ freckle_folder_vars.grav_sass_includes | default([]) }}"
     grav_sass_poll: "{{ freckle_folder_vars.grav_sass_poll | default(false) }}"
+
+- name: "freckle_docker: {{ grav_docker }}"
+  debug: var=freckle_docker
 
 - name: "[setting letsencrypt_email]"
   set_fact:
