@@ -90,10 +90,11 @@
     supervisor_programs: "{{ supervisor_programs }} + {{ supervisor_sass }}"
   when: "use_grav_sass is defined and use_grav_sass"
 
-# - name: install virtualenv
-  # install:
-    # packages:
-      # - virtualenv
+- name: installing virtualenv
+  install:
+    packages:
+      - virtualenv
+  become: true
 
 - name: installing supervisord
   include_role:
@@ -101,3 +102,4 @@
   vars:
     supervisor_virtualenv: "/opt/supervisord"
     supervisor_nodaemon: true
+  become: true
