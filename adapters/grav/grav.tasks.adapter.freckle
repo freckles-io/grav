@@ -18,9 +18,6 @@
     grav_sass_includes: "{{ freckle_folder_vars.grav_sass_includes | default([]) }}"
     grav_sass_poll: "{{ freckle_folder_vars.grav_sass_poll | default(false) }}"
 
-- name: "freckle_docker: {{ grav_docker }}"
-  debug: var=freckle_docker
-
 - name: "[setting letsencrypt_email]"
   set_fact:
     webserver_enable_https: false
